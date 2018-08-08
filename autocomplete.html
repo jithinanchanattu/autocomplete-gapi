@@ -1,0 +1,43 @@
+<html>
+<head>
+<title>Test HTML Page for Autocomplete</title>
+<style>
+body{
+    padding: 30px;
+}
+</style>
+<link href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet"></link>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.min.js" type="text/javascript"></script>
+<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+    
+    $("#suggest").autocomplete({
+        delay: 1,
+        source: function (request, response) {
+            
+            // Suggest URL
+            var suggestURL = "http://suggestqueries.google.com/complete/search?client=chrome&q=%QUERY";
+            suggestURL = suggestURL.replace('%QUERY', request.term);
+            
+            // JSONP Request
+            $.ajax({
+                method: 'GET',
+                dataType: 'jsonp',
+                jsonpCallback: 'jsonCallback',
+                url: suggestURL
+            })
+            .success(function(data){
+                response(data[1]);
+            });
+        }
+    });
+
+});
+</script>
+</head>
+<body>
+<input type="text" placeholder="type something ..." id="suggest" />
+</body>
+</html>
